@@ -1,3 +1,6 @@
 controllers:
   resource: ../src/Controller/
   type: attribute
+
+security_logout:
+    path: /logout
