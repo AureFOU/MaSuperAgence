@@ -16,13 +16,12 @@ security:
             #anonymous: true
             #lazy: true
             #provider: users_in_memory
-
+            logout:
+                path: security_logout
+                target: /
             form-login:
                 check_path: login
 
-            logout:
-                path: security_logout
-                #target: /
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
