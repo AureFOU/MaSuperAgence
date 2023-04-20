@@ -8,6 +8,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use PhpParser\Node\Expr\Array_;
+use function ContainerNkU1fNv\setParameter;
 
 /**
  * @extends ServiceEntityRepository<Property>
@@ -47,6 +48,16 @@ class PropertyRepository extends ServiceEntityRepository
             $query = $query
                 ->andWhere('p.surface >= :minSurface')
                 ->setParameter('minSurface', $search->getMinSurface());
+        }
+
+        if($search->getOptions()->count() > 0){
+            $k = 0;
+            foreach ($search->getOptions() as $option){
+                $k++
+                $query = $query
+                    ->andWhere(":option$k MEMBER of p.options")
+                    ->setParameter("option$k", $option);
+            }
         }
 
         return $query->getQuery();
