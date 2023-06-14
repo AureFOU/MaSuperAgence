@@ -1,12 +1,9 @@
 <?php
 namespace App\Controller;
 
-use App\Entity\Contact;
 use App\Entity\Property;
 use App\Entity\PropertySearch;
-use App\Form\ContactType;
 use App\Form\PropertySearchType;
-use App\Notification\ContactNotification;
 use App\Repository\PropertyRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Knp\Component\Pager\PaginatorInterface;
@@ -51,35 +48,19 @@ class PropertyController extends AbstractController
 }
 
 #[Route('/biens/{slug}-{id}', name:'property.show', requirements:['slug' => '[\w\/\s.-]+'])]
-function show(Property $property, $slug, Request $request, ContactNotification $notification): Response
+function show(Property $property, $slug): Response
     {
-        // Si on ajoute des lettres dans l'adresse URL ça permet de revenir au slug
-        if ($property->getSlug() !== $slug) {
-            return $this->redirectToRoute('property.show', [
-                'id' => $property->getId(),
-                'slug' => $property->getSlug(),
-            ], 301);
-        }
-
-        $contact = new Contact();
-        $contact->setProperty($property);
-        $form = $this->createForm(ContactType::class, $contact);
-        $form->handleRequest($request);
-
-        if($form -> isSubmitted() && $form->isValid()){
-            $notification->notify($contact);
-            $this->addFlash('success', 'Votre email a bien été envoyé');
-            /*return $this->redirectToRoute('property.show', [
-                'id' => $property->getId(),
-                'slug' => $property->getSlug(),
-            ]);*/
-        }
-
-        return $this->render('property/show.html.twig', [
-            'property' => $property,
-            'current_menu' => 'properties',
-            'form' => $form->createView()
-        ]);
+    // Si on ajoute des lettres dans l'adresse URL ça permet de revenir au slug
+    if ($property->getSlug() !== $slug) {
+        return $this->redirectToRoute('property.show', [
+            'id' => $property->getId(),
+            'slug' => $property->getSlug(),
+        ], 301);
     }
-}
 
+    return $this->render('property/show.html.twig', [
+        'property' => $property,
+        'current_menu' => 'properties',
+    ]);
+}
+}
